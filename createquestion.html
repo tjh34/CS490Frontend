@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="css/main.css">
+	
+	<link rel="stylesheet" href="css/main.css">
 </head>
 <title>Professor's Questions</title>
 <style>
@@ -9,11 +10,61 @@
 </style>
 </head>
 <body>
-<ul>
+<ul class="topnav" id="myTopnav">
   <li><a href="professorhome.html">Home</a></li>
-  <li><a class="active" href="createquestion.html">Create Questions</a></li>
+  <li class="active"><a href="createquestion.html">Create Questions</a></li>
   <li><a href="createtest.html">Create Test</a></li>
 </ul>
-
+<br><br><hr>
+<label>New Question:<br><br>
+  <textarea id="question" cols="80" rows="5" /></textarea>
+</label>
+<br>
+<input id="diff" type="radio" name="difficulty" value="1">Easy<br>
+ <input id="diff" type="radio" name="difficulty" value="2">Medium<br>
+ <input id="diff" type="radio" name="difficulty" value="3">Hard<br><br>
+<button id="button" style="cursor: pointer; text-decoration: underline">
+  Make a request
+</button>
 </body>
+<script type="text/javascript">
+	
+(function() {
+  var httpRequest;
+    document.getElementById("button").onclick = function() { 
+      var question = document.getElementById("question").value;
+      var difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+
+
+
+
+      makeRequest('test.php', question, difficulty); 
+  };
+
+  function makeRequest(url, question, difficulty) {
+    httpRequest = new XMLHttpRequest();
+
+    if (!httpRequest) {
+      alert('Giving up :( Cannot create an XMLHTTP instance');
+      return false;
+    }
+        httpRequest.onreadystatechange = alertContents;
+    httpRequest.open('POST', url);
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.send('question=' + encodeURIComponent(question) + '&difficulty=' + encodeURIComponent(difficulty));
+  
+  }
+
+  function alertContents() {
+  if (httpRequest.readyState === XMLHttpRequest.DONE) {
+    if (httpRequest.status === 200) {
+      var response = JSON.parse(httpRequest.responseText);
+      alert(response.computedString);
+    } else {
+      alert('There was a problem with the request.');
+    }
+  }
+}
+})();
+</script>
 </html>
